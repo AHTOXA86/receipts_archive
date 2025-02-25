@@ -91,6 +91,7 @@ class ReceiptCreate(SQLModel):
     payment_type: str
     sum: float
     shop_name: str
+    products: List[ProductCreate]
 
 
 class ReceiptRead(ReceiptCreate):

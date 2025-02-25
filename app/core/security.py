@@ -1,6 +1,7 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jwcrypto import jwt, jwk
+import json
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from typing import Optional
@@ -49,8 +50,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
-    to_encode.update({"exp": int(expire.timestamp())})
+        expire = datetime.utcnow() + timedelta(minutes=150)
+    to_encode.update({"iat": int(expire.timestamp())})
 
     token = jwt.JWT(header={"alg": "HS256"}, claims=to_encode)
     token.make_signed_token(key)
@@ -66,11 +67,8 @@ async def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        # import pdb
-
-        # pdb.set_trace()
         decoded_token = jwt.JWT(key=key, jwt=token)
-        claims = decoded_token.claims
+        claims = json.loads(decoded_token.claims)
         username: str = claims.get("sub")
         if username is None:
             raise credentials_exception

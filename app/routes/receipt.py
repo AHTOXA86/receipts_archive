@@ -15,16 +15,42 @@ router = APIRouter(prefix="/receipts", tags=["receipts"])
 
 @router.post("/", response_model=ReceiptRead)
 async def create_receipt(
-    receipt: ReceiptCreate,
+    receipt_data: ReceiptCreate,
     current_user: User = Depends(get_current_active_user),
     session: Session = Depends(get_session)
 ):
+    products_data = receipt_data.get("products", [])
+    payment_data = receipt_data.get("payment", {})
+
+    if not products_data or not payment_data:
+        raise HTTPException(status_code=400, detail="Products and payment information are required")
+
     db_receipt = Receipt(
-        **receipt.dict(),
         user_id=current_user.id,
-        created_at=datetime.utcnow()
+        created_at=datetime.utcnow(),
+        payment_type=payment_data.get("type"),
+        payment_amount=payment_data.get("amount")
     )
     session.add(db_receipt)
+    session.commit()
+    session.refresh(db_receipt)
+
+    for product_data in products_data:
+        product = Product(
+            name=product_data["name"],
+            price=product_data["price"]
+        )
+        session.add(product)
+        session.commit()
+        session.refresh(product)
+
+        receipt_product = ProductToReceipt(
+            receipt_id=db_receipt.id,
+            product_id=product.id,
+            count=product_data["quantity"]
+        )
+        session.add(receipt_product)
+
     session.commit()
     session.refresh(db_receipt)
     return db_receipt
