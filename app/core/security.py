@@ -14,8 +14,8 @@ from ..db.database import get_session
 # Constants
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
-# Generate or load JWT key
-key = jwk.JWK.generate(kty="oct", size=256)
+# load JWT key
+key = jwk.JWK.from_json(settings.SECRET_KEY)
 
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -50,10 +50,10 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=150)
+        expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"iat": int(expire.timestamp())})
 
-    token = jwt.JWT(header={"alg": "HS256"}, claims=to_encode)
+    token = jwt.JWT(header={"alg": settings.ALGORITHM}, claims=to_encode)
     token.make_signed_token(key)
     return token.serialize()
 

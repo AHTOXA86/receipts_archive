@@ -74,11 +74,23 @@ class ReceiptCreate(SQLModel):
     shop_name: str
     products: List[ProductCreate]
 
+class PaymentInfo(SQLModel):
+    type: PaymentType
+    amount: float
 
-class ReceiptRead(ReceiptCreate):
+class ProductInfo(SQLModel):
+    name: str
+    price: float
+    quantity: float
+    total: float
+
+class ReceiptRead(SQLModel):
     id: int
+    products: List[ProductInfo]
+    payment: PaymentInfo
+    total: float
+    rest: float
     created_at: datetime
-    user_id: int
 
 
 class UserBase(SQLModel):

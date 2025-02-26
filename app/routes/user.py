@@ -14,7 +14,17 @@ from ..core.security import (
 from ..db.database import get_session
 
 router = APIRouter()
+"""
+Authentication and user management router.
 
+This module provides API endpoints for user authentication and management:
+- POST /token: Login endpoint that returns a JWT access token
+- POST /users/: Create new user account
+- GET /users/me/: Get current authenticated user details
+
+The router uses OAuth2 password flow with JWT tokens for authentication.
+User passwords are hashed before storage in the database.
+"""
 @router.post("/token", response_model=Token)
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),

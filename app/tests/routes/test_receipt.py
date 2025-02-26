@@ -1,7 +1,7 @@
 import pytest
 from fastapi import HTTPException
 from datetime import datetime
-from sqlmodel import Session, select
+from sqlmodel import Session
 from app.models import Receipt, Product, ProductToReceipt, PaymentType, QuantityType
 from app.routes.receipt import get_formatted_receipt
 from unittest.mock import MagicMock
