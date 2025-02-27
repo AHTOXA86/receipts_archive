@@ -29,6 +29,15 @@ app/
 - Environment variables configured for database connection and JWT secret key
 
 ### Installation
+
+By Docker:
+```bash
+git clone git@github.com:AHTOXA86/receipts_archive.git
+cd receipts_archive
+docker-compose up
+```
+
+Or manually:
 ```bash
 # Clone the repository
 git clone git@github.com:AHTOXA86/receipts_archive.git
