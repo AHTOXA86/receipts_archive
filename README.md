@@ -32,7 +32,7 @@ app/
 ```bash
 # Clone the repository
 git clone git@github.com:AHTOXA86/receipts_archive.git
-cd app
+cd receipts_archive/app
 
 # Create and activate virtual environment
 python -m venv venv
@@ -52,6 +52,7 @@ export ACCESS_TOKEN_EXPIRE_MINUTES=30
 
 2. Start the application:
 ```bash
+cd ../
 uvicorn app.main:app --reload
 ```
 
@@ -69,6 +70,9 @@ response = requests.post(
     }
 )
 ```
+### Documentation
+http://localhost:8000/docs
+
 
 ### More Detailed Examples
 1. Authenticate and get access token:
